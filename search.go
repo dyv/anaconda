@@ -24,3 +24,16 @@ func (a TwitterApi) GetSearch(queryString string, v url.Values) (timeline []Twee
 	timeline = sr.Statuses
 	return timeline, err
 }
+
+func (a TwitterApi) GetTop() (timeline []Tweet, err error) {
+	var sr searchResponse
+
+	response_ch := make(chan response)
+	var v url.Values
+	a.queryQueue <- query{BaseUrl + "/statuses/sample.json", v, &sr, _GET, response_ch}
+
+	resp := <-response_ch
+	err = resp.err
+	timeline = sr.Statuses
+	return timeline, err
+}
